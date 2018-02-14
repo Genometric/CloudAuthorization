@@ -19,8 +19,9 @@ class CloudAuthz:
                 raise KeyError("`id_token` is not provided.")
             if 'role_arn' not in config:
                 raise KeyError("`role_arn` is not provided.")
-            return authz.authorize(config['id_token'],
-                                   config['role_arn'],
-                                   config.get('role_session_name', 900),
-                                   config.get('role_session_name', 'cloud-authz'))
+            return authz.get_credentials(
+                config['id_token'],
+                config['role_arn'],
+                config.get('role_session_name', 900),
+                config.get('role_session_name', 'cloud-authz'))
         raise NotImplementedError("Authorization flow for the provider `{}` is not implemented.".format(provider))

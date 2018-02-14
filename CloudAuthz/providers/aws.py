@@ -1,10 +1,12 @@
 """
 Implements means of exchanging user ID token with temporary access and secret key.
 """
+from ..interfaces.providers import *
+
 import requests
 
 
-class Authorize:
+class Authorize(IProvider):
 
     action = "AssumeRoleWithWebIdentity"
     version = "2011-06-15"
@@ -12,7 +14,7 @@ class Authorize:
     def __init__(self):
         pass
 
-    def authorize(self, identity_token, role_arn, duration, role_session_name):
+    def get_credentials(self, identity_token, role_arn, duration, role_session_name):
         url = "https://sts.amazonaws.com/?" \
               "DurationSeconds={}&" \
               "Action={}&Version={}&" \
