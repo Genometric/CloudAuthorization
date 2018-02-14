@@ -4,12 +4,14 @@ Implements means of exchanging user ID token with temporary access and secret ke
 from ..interfaces.providers import *
 
 import requests
+import xml.etree.ElementTree as ET
 
 
 class Authorize(IProvider):
 
     action = "AssumeRoleWithWebIdentity"
     version = "2011-06-15"
+    namespace = '{https://sts.amazonaws.com/doc/2011-06-15/}'
 
     def __init__(self):
         pass
@@ -48,4 +50,11 @@ class Authorize(IProvider):
               "WebIdentityToken={}"\
             .format(duration, self.action, self.version, role_session_name,role_arn, identity_token)
         response = requests.get(url)
-        return response.content
+        root = ET.fromstring(response.content)
+
+        rtv = {}
+        role_assume_result = root.find('{}AssumeRoleWithWebIdentityResult'.format(self.namespace))
+        credentials = role_assume_result.find('{}Credentials'.format(self.namespace))
+        for attribute in credentials:
+            rtv[attribute.tag.replace(self.namespace, '')] = attribute.text
+        return rtv
