@@ -16,5 +16,8 @@ environment:
 
 install:
   - "%PYTHON%\\python.exe -m pip install wheel"
+  
+build_script:
+  - sonar-scanner -Dsonar.projectKey=CloudAuthz -Dsonar.organization=genometric -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io
 
 build: off
